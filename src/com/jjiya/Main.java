@@ -1,5 +1,10 @@
 package com.jjiya;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Main {
 
 
@@ -7,22 +12,33 @@ public class Main {
 
     public static String parseHttpHeader(String str) {
         // 캐리지 리턴
-        return null;
+        return str.split("\n")[0];
     }
 
     public static String getCommond(String header) {
         // "GET", "POST"
-        return null;
+        return header.split(" ")[0];
     }
 
     public static String getRequestPath(String header) {
         // "/test.html"
-        return null;
+        return header.split(" ")[1];
     }
 
-    public static String getFileContents(String path) {
+    public static String getFileContents(String path) throws FileNotFoundException, IOException {
         // "E:\JWebServer\data" + path
-        return null;
+        File file = new File("E:\\JWebServer\\data"+path);
+        //입력 스트림 생성
+        FileReader filereader = new FileReader(file);
+        int ch = filereader.read();
+        String contents = "";
+        while(ch != -1){
+            contents += (char)ch;
+            ch = filereader.read();
+        }
+        filereader.close();
+
+        return contents;
     }
 
 
@@ -45,7 +61,19 @@ public class Main {
             String path = getRequestPath(requestHeader);
 
             //
-            String contents = getFileContents(path);
+            try {
+                String contents = getFileContents(path);
+
+                System.out.println("=====request=====");
+                System.out.println(requestStr);
+                System.out.println("=====response=====");
+                System.out.println("Header  : "+requestHeader);
+                System.out.println("Commend : "+commandStr);
+                System.out.println("Path    : "+path);
+                System.out.println("Contents: \n"+contents);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
         else
