@@ -4,10 +4,29 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.ServerSocket;
 
 public class Main {
 
+    private int           mCountOfThread = 0;
+    private static String mDataPath      = null;
+    private ServerSocket  mServerSocket  = null;
 
+    public int getCountOfThread() {
+        return mCountOfThread;
+    }
+
+    public void setCountOfThread(int count) {
+        this.mCountOfThread = count;
+    }
+
+    public String getDataPath() {
+        return mDataPath;
+    }
+
+    private static void setDataPath(String str) {
+        mDataPath = str;
+    }
 
 
     public static String parseHttpHeader(String str) {
@@ -41,10 +60,19 @@ public class Main {
         return contents;
     }
 
-
-
-
     public static void main(String[] args) {
+
+        if ( args.length < 1 ) {
+            System.out.println("Oops! Required Data root path with arguments!");
+            return;
+        } else {
+            File path = new File(args[0]);
+            if ( ! path.isDirectory() ) {
+                System.out.println("Oops! Required Data root path with arguments!");
+                return;
+            }
+            setDataPath(args[0]);
+        }
 
         // "GET / HTTP/1.1"
         String requestStr = "GET /test.html HTTP/1.1\nHost: jjiya.com\n\nabcdefg"; // 웹부라우져가 요청한 전체 스트링

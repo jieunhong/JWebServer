@@ -1,2 +1,3 @@
 .idea/
-JWebServer.iml
+.out/
+*.iml
