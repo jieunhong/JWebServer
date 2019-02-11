@@ -1,16 +1,20 @@
 package com.jjiya;
 
+import com.jjiya.net.Constants;
+import com.jjiya.net.TcpServerThread;
+import com.jjiya.net.Util;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
 
 public class Main {
 
-    private int           mCountOfThread = 0;
-    private static String mDataPath      = null;
-    private ServerSocket  mServerSocket  = null;
+    private static int          mCountOfThread = 0;
+    private static String       mDataPath      = null;
+    private static ServerSocket mServerSocket  = null;
 
     public int getCountOfThread() {
         return mCountOfThread;
@@ -20,44 +24,12 @@ public class Main {
         this.mCountOfThread = count;
     }
 
-    public String getDataPath() {
+    public static String getDataPath() {
         return mDataPath;
     }
 
     private static void setDataPath(String str) {
         mDataPath = str;
-    }
-
-
-    public static String parseHttpHeader(String str) {
-        // 캐리지 리턴
-        return str.split("\n")[0];
-    }
-
-    public static String getCommond(String header) {
-        // "GET", "POST"
-        return header.split(" ")[0];
-    }
-
-    public static String getRequestPath(String header) {
-        // "/test.html"
-        return header.split(" ")[1];
-    }
-
-    public static String getFileContents(String path) throws FileNotFoundException, IOException {
-        // "E:\JWebServer\data" + path
-        File file = new File("E:\\JWebServer\\data"+path);
-        //입력 스트림 생성
-        FileReader filereader = new FileReader(file);
-        int ch = filereader.read();
-        String contents = "";
-        while(ch != -1){
-            contents += (char)ch;
-            ch = filereader.read();
-        }
-        filereader.close();
-
-        return contents;
     }
 
     public static void main(String[] args) {
@@ -74,23 +46,25 @@ public class Main {
             setDataPath(args[0]);
         }
 
+        /**
+         *
+         */
         // "GET / HTTP/1.1"
         String requestStr = "GET /test.html HTTP/1.1\nHost: jjiya.com\n\nabcdefg"; // 웹부라우져가 요청한 전체 스트링
 
         // "GET /test.html HTTP/1.1
-        String requestHeader = parseHttpHeader(requestStr);
+        String requestHeader = Util.parseHttpHeader(requestStr);
 
         // GET
-        String commandStr = getCommond(requestHeader);
+        String commandStr = Util.getCommond(requestHeader);
 
         if ( "GET".equals(commandStr) )
         {
             // /test.html
-            String path = getRequestPath(requestHeader);
-
+            String path = Util.getRequestPath(requestHeader);
             //
             try {
-                String contents = getFileContents(path);
+                String contents = Util.getFileContents(path);
 
                 System.out.println("=====request=====");
                 System.out.println(requestStr);
@@ -102,39 +76,37 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
         else
         {
             //
         }
 
-
-        // 1. get으로 요청하면 파일목록 띄워주는 기능
-        /*
-
-
-
-GET /test.html HTTP/1.1
-Host: jjiya.com
-
-HTTP/1.1 200 OK
-Server: nginx
-Date: Fri, 08 Feb 2019 05:30:29 GMT
-Content-Type: text/html
-Content-Length: 35
-Connection: keep-alive
-Keep-Alive: timeout=20
-Last-Modified: Fri, 08 Feb 2019 05:24:25 GMT
-ETag: "23-5815b2c15595d"
-Accept-Ranges: bytes
-Vary: Accept-Encoding
-
-<html> <body> test </body> </html>
-
-
-
+        /**
+         *
          */
+        new Thread() {
+            public void run() {
+                int lastThreadIndex = 0;
+                try {
+                    mServerSocket = new ServerSocket( Constants.SERVER_LISTEN_PORT );
+                    System.out.println("JWebServer Rendezvous ready. listen port:"+Constants.SERVER_LISTEN_PORT);
 
+                    while ( true ) {
+                        Socket tcpClientSocket  = mServerSocket.accept();
+                        System.out.println("accept()");
+                        lastThreadIndex++;
+                        TcpServerThread tcpServerThread = new TcpServerThread(tcpClientSocket, lastThreadIndex);
+                        tcpServerThread.start();
+                    }
+                } catch (SocketException e) {
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 }

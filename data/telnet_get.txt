@@ -1,0 +1,17 @@
+
+GET /test.html HTTP/1.1
+Host: jjiya.com
+
+HTTP/1.1 200 OK
+Server: nginx
+Date: Fri, 08 Feb 2019 05:30:29 GMT
+Content-Type: text/html
+Content-Length: 35
+Connection: keep-alive
+Keep-Alive: timeout=20
+Last-Modified: Fri, 08 Feb 2019 05:24:25 GMT
+ETag: "23-5815b2c15595d"
+Accept-Ranges: bytes
+Vary: Accept-Encoding
+
+<html> <body> test </body> </html>

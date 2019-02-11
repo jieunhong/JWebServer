@@ -1,5 +1,11 @@
 package com.jjiya.net;
 
+import com.jjiya.Main;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -48,5 +54,39 @@ public class Util {
         buffer.put(bytes);
         buffer.flip();//need flip
         return buffer.getLong();
+    }
+
+    public static String parseHttpHeader(String str) {
+        // 캐리지 리턴
+        return str.split("\n")[0];
+    }
+
+    public static String getCommond(String header) {
+        // "GET", "POST"
+        return header.split(" ")[0];
+    }
+
+    public static String getRequestPath(String header) {
+        // "/test.html"
+        return header.split(" ")[1];
+    }
+
+    public static String getFileContents(String path) throws FileNotFoundException, IOException {
+        // "E:\JWebServer\data" + path
+
+        String localPath = path.replace("/", File.separator);
+
+        File file = new File(Main.getDataPath() + File.separator + path);
+        //입력 스트림 생성
+        FileReader filereader = new FileReader(file);
+        int ch = filereader.read();
+        String contents = "";
+        while(ch != -1){
+            contents += (char)ch;
+            ch = filereader.read();
+        }
+        filereader.close();
+
+        return contents;
     }
 }
