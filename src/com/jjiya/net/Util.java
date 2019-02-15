@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Andrew
@@ -74,18 +75,35 @@ public class Util {
     public static String getFileContents(String path) throws FileNotFoundException, IOException {
         // "E:\JWebServer\data" + path
 
+        String contents  = null;
         String localPath = path.replace("/", File.separator);
 
         File file = new File(Main.getDataPath() + File.separator + path);
-        //입력 스트림 생성
-        FileReader filereader = new FileReader(file);
-        int ch = filereader.read();
-        String contents = "";
-        while(ch != -1){
-            contents += (char)ch;
-            ch = filereader.read();
+
+        if ( file.isFile() )
+        {
+            contents = "";
+            //입력 스트림 생성
+            FileReader filereader = new FileReader(file);
+            int        ch         = filereader.read();
+
+            while ( ch != -1 ) {
+                contents += (char)ch;
+                ch       =  filereader.read();
+            }
+            filereader.close();
         }
-        filereader.close();
+        else
+        {
+            if ( file.isDirectory() )
+            {
+
+            }
+            else if ( ! file.exists() )
+            {
+
+            }
+        }
 
         return contents;
     }

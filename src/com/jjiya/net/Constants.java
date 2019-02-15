@@ -6,6 +6,8 @@ package com.jjiya.net;
  */
 public class Constants {
 
+    public final static int    HTTP_HEADER_BUFFER_SIZE = 1000;
+
     public final static int    DEFAULT_BUFFER_SIZE = 10000;
 
     public final static int    SERVER_LISTEN_PORT  = 8080;

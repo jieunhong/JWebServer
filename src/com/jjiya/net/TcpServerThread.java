@@ -24,7 +24,6 @@ public class TcpServerThread extends Thread {
 	private InputStream         mInputStream        = null;
 	private OutputStream        mOutputStream       = null;
 	
-	
 	public TcpServerThread(Socket tcpClientSocket, int indexOfThread) {
 		this.mTcpClientSocket = tcpClientSocket;
 		this.mIndexOfThread   = indexOfThread;

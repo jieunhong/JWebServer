@@ -1,6 +1,7 @@
 package com.jjiya;
 
 import com.jjiya.net.Constants;
+import com.jjiya.net.HttpServerThread;
 import com.jjiya.net.TcpServerThread;
 import com.jjiya.net.Util;
 
@@ -96,7 +97,8 @@ public class Main {
                         Socket tcpClientSocket  = mServerSocket.accept();
                         System.out.println("accept()");
                         lastThreadIndex++;
-                        TcpServerThread tcpServerThread = new TcpServerThread(tcpClientSocket, lastThreadIndex);
+                        //TcpServerThread tcpServerThread = new TcpServerThread(tcpClientSocket, lastThreadIndex);
+                        HttpServerThread tcpServerThread = new HttpServerThread(tcpClientSocket, lastThreadIndex);
                         tcpServerThread.start();
                     }
                 } catch (SocketException e) {
